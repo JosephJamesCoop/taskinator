@@ -62,8 +62,9 @@ var createTaskEl = function (taskDataObj) {
 	tasksToDoEl.appendChild(listItemEl);
 	taskDataObj.id = taskIdCounter;
 	tasks.push(taskDataObj);
-
+	
 	taskIdCounter++;
+	saveTasks();
 };
 
 var createTaskActions = function (taskId) {
@@ -113,17 +114,16 @@ var completeEditTask = function (taskName, taskType, taskId) {
 	alert("Task Updated");
 	// loop through tasks array and task object with new content
 	for (var i = 0; i < tasks.length; i++) {
-		console.log(tasks[i].id);
 		if (tasks[i].id === parseInt(taskId)) {
 			tasks[i].name = taskName;
 			tasks[i].type = taskType;
 		}
+		
 	}
 	formEl.removeAttribute("data-task-id");
 	document.querySelector("#save-task").textContent = "Add Task";
+	saveTasks();
 };
-
-formEl.addEventListener("submit", taskFormHandler);
 
 
 var taskButtonHandler = function (event) {
@@ -173,10 +173,10 @@ var taskStatusChangeHandler = function (event) {
 		if (tasks[i].id === parseInt(taskId)) {
 			tasks[i].tatus = statusValue;
 		}
-	}console.log(tasks);
+	}
+	saveTasks();
 };
 var editTask = function (taskId) {
-	console.log(taskId);
 	// get task list item element
 	var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
 	// get content from task name an type
@@ -189,7 +189,6 @@ var editTask = function (taskId) {
 
 }
 var deleteTask = function (taskId) {
-	console.log(taskId)
 	var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
 	taskSelected.remove();
 
@@ -202,10 +201,13 @@ var deleteTask = function (taskId) {
 			updatedTaskArr.push(tasks[i]);
 		}
 	}
-	//reassign tasks arrat to be the samea s updatedTaskArr
+	//reassign tasks array to be the same as updatedTaskArr
 	tasks = updatedTaskArr;
+	saveTasks();
 };
-
+var saveTasks = function() {
+	localStorage.setItem("tasks", JSON.stringify(tasks));
+};
 
 formEl.addEventListener("submit", taskFormHandler);
 
